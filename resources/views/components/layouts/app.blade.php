@@ -17,9 +17,9 @@
  
 </head>
     <body class="font-sans antialiased ">
-        <div class="bg-gray-50 text-gray-800 font-sans antialiased">
+        <div class=" text-gray-800 font-sans antialiased">
             @include('components.navbar')
-            <main class="flex-1 flex flex-col overflow-hidden bg-gray-50">
+            <main class="flex-1 flex flex-col overflow-hidden ">
                 {{ $slot }}
             </main>
             </div>
