@@ -27,7 +27,7 @@
             </li>
 
             <li>
-              <a class="text-black transition hover:text-gray-600 font-inter    " href="#"> Register </a>
+              <a class="text-black transition hover:text-gray-600 font-inter    " href="{{ route('register') }}"> Register </a>
             </li>
           </ul>
         </nav>
