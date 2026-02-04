@@ -1,4 +1,4 @@
-   <section class="bg-white">
+   <section id="home" class="bg-white pt-10">
         <div class="mx-auto max-w-7xl px-4 py-16 lg:px-8 mt-5 lg:-mt-12">
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
 

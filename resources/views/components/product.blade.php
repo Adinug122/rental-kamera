@@ -1,5 +1,5 @@
  @props(['produk'])
- <section class="py-15 relative">
+ <section id="produk" class="pt-20 relative">
      
         <div class="max-w-7xl mx-auto">
             <div class="text-center font-playfair text-4xl font-bold text-black">
@@ -43,12 +43,33 @@
                             <h3 class="font-medium text-gray-900 text-lg leading-tight">{{ $item->nama_produk }}</h3>
                         </div>
                         <div class="mt-3">
-                            <p class="text-gray-900 font-medium text-xl">
-                         Rp {{ number_format($item->harga, 0, ',', '.') }}
+                            @if ($item->discount)
+                                 <p class="text-gray-900 font-medium text-sm">
+                                    <span class="text-slate-500 line-through">
+                                        Rp {{ number_format($item->harga, 0, ',', '.') }} 
+                                    </span>
+
+                         Rp {{ number_format($item->harga_final, 0, ',', '.') }}
                               @if (! $item->is_sale)
                                 <span class="text-gray-500 font-normal text-sm">/ day</span>
                             @endif
+                                <span class="ml-1 text-xs px-2 py-1 bg-red-100 text-red-600 rounded">
+                {{ $item->discount }}%
+            </span>
                             </p>
+                            @else
+                                <p class="text-gray-900 font-medium text-base">
+                                    Rp {{ number_format($item->harga,0,',','.') }}
+                                </p>
+                            @endif
+                           
+                        </div>
+                            <div class="mt-4">
+                           <a href="{{ route('produk.show',$item->id) }}" class="relative text-sm font-medium text-gray-700 group">
+    Lihat Detail
+    <span class="absolute left-0 -bottom-1 w-0 h-[1px] bg-black transition-all duration-300 group-hover:w-full"></span>
+</a>
+
                         </div>
                     </div>
 
@@ -58,7 +79,7 @@
                
             </div>
             <div class="flex justify-center items-center mt-10">
-            <a href="#" class="bg-black text-white px-13 py-3 rounded-lg  transition-colors tracking-widest text-sm font-bold group relative">
+            <a href="#" class="bg-black text-white px-12 py-3 rounded-lg  transition-colors tracking-widest text-sm font-bold group relative">
                 <div class="scale-x-0 absolute inset-0 w-full h-full bg-gray-800 transform rounded-lg origin-left transition-transform duration-300 ease-out group-hover:scale-x-100"></div>
                <span class="relative z-10 transition-colors duration-300">
                  CLICK MORE

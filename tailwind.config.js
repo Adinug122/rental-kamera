@@ -12,7 +12,9 @@ export default {
     theme: {
         extend: {
             fontFamily: {
-                sans: ['Figtree', ...defaultTheme.fontFamily.sans],
+                sans: ['Inter', 'sans-serif'],       // default body
+        playfair: ['Playfair Display'],
+        lobster: ['Lobster', 'cursive'],  
             },
         },
     },

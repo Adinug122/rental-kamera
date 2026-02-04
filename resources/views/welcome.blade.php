@@ -171,7 +171,7 @@
         </div>
     </section>
 
- <section class="py-20">
+ <section id="contact" class="py-20">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <h2 class="text-center text-sm tracking-[0.2em] text-[#393939] font-bold uppercase">
             Contact

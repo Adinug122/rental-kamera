@@ -19,9 +19,15 @@ class ProductsTable
             ->columns([
                 TextColumn::make('nama_produk')
                     ->searchable(),
+                TextColumn::make('deskripsi')
+                    ->searchable()
+                    ->limit(10),
                 TextColumn::make('harga')
                     ->numeric()
                     ->sortable(),
+                TextColumn::make('benefits')
+                    ->badge()
+                    ->color('primary'),
                 TextColumn::make('brands')
                     ->searchable(),
               ImageColumn::make('image')

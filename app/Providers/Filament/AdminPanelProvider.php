@@ -36,7 +36,14 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->id('admin')
             ->path('admin')
-            ->login()
+            ->login(false)
+             ->middleware([
+                'web',
+            ])
+            ->authMiddleware([
+                'auth',
+            ])
+            ->authGuard('web')
             ->colors([
                 'primary' => Color::Primary,
             ])

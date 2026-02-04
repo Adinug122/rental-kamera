@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Products\Schemas;
 
 use Directory;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Toggle;
@@ -23,6 +24,16 @@ class ProductForm
                 Textarea::make('deskripsi')
                     ->columnSpanFull(),
                 TextInput::make('brands'),
+               Repeater::make('benefits')
+                    ->label('Kelengkapan / Benefit Sewa')
+                    ->simple(
+                        TextInput::make('item') // Beri nama dummy 'item'
+                            ->placeholder('Contoh: Charger')
+                            ->required()
+                    )
+                    ->addActionLabel('Tambah Benefit')
+                    ->columnSpanFull(),
+                    
                 FileUpload::make('image')
                     ->image()
                     ->Directory('products')
