@@ -13,8 +13,11 @@ Route::post('/contact',[HomeController::class,'store'])->name('contact.store');
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
+
 Route::get('/produk/{product}', [ProductController::class, 'show'])
     ->name('produk.show');
+Route::post('/booking/check', [ProductController::class, 'checkAvailability'])
+    ->name('booking.check');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

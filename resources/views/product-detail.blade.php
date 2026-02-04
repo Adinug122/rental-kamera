@@ -1,11 +1,9 @@
 <x-layouts.app>
     <div class="bg-gray-50/50 min-h-screen pb-20">
-        {{-- BREADCRUMBS --}}
-        <nav class="max-w-7xl mx-auto px-6 py-6 text-sm text-gray-500">
+        <nav class="max-w-7xl mx-auto px-6  pt-20 text-sm text-gray-500">
             <ol class="flex items-center space-x-2">
                 <li>
                     <a href="/" class="hover:text-black transition-colors flex items-center gap-1">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
                         Home
                     </a>
                 </li>
@@ -22,11 +20,11 @@
             </ol>
         </nav>
 
-        <div class="max-w-7xl mx-auto px-6">
+        <div class="max-w-7xl mx-auto mt-10 px-6">
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 xl:gap-14">
                 
                 <div class="lg:col-span-7 flex flex-col gap-10">
-                    <div class="w-full bg-white rounded-3xl p-2 shadow-sm border border-gray-100">
+                    <div class=" rounded-3xl  shadow-sm border border-gray-100">
                         <div class="relative overflow-hidden rounded-2xl bg-gray-200 aspect-[4/3] group">
                             <img src="{{ asset('storage/'.$product->image) }}"
                                  alt="{{ $product->nama_produk }}"
@@ -115,21 +113,22 @@
                             
                             <h3 class="text-lg font-bold mb-5">Atur Jadwal Sewa</h3>
         
-                            <form action="#" method="POST">
+                            <form id="checkForm" action="javascript:void(0);">
                                 @csrf
                                 <div class="space-y-4">
                                     <div class="grid grid-cols-2 gap-4">
                                         <div class="col-span-2 md:col-span-1">
+                                            <input id="product_id" type="hidden" name="product_id" value="{{ $product->id }}">
                                             <label class="block text-[10px] font-bold uppercase text-gray-500 mb-1.5 ml-1">Mulai Sewa</label>
                                             <div class="relative">
-                                                <input type="date" name="start_date"
+                                                <input id="tanggal_rental" type="date" name="tanggal_rental"
                                                     class="w-full bg-gray-50 border-transparent focus:bg-white border-gray-100 rounded-xl px-4 py-3 text-sm font-medium focus:ring-2 focus:ring-black focus:border-transparent transition-all cursor-pointer">
                                             </div>
                                         </div>
                                         <div class="col-span-2 md:col-span-1">
                                             <label class="block text-[10px] font-bold uppercase text-gray-500 mb-1.5 ml-1">Selesai Sewa</label>
                                             <div class="relative">
-                                                <input type="date" name="end_date"
+                                                <input id="tanggal_selesai" type="date" name="tanggal_selesai"
                                                     class="w-full bg-gray-50 border-transparent focus:bg-white border-gray-100 rounded-xl px-4 py-3 text-sm font-medium focus:ring-2 focus:ring-black focus:border-transparent transition-all cursor-pointer">
                                             </div>
                                         </div>
@@ -142,11 +141,20 @@
                                         </p>
                                     </div>
             
-                                    <button type="submit"
+                                    <button type="submit" id="btnCheck"
                                             class="w-full bg-gray-900 text-white py-4 rounded-xl font-bold text-lg hover:bg-black hover:shadow-lg hover:-translate-y-0.5 transform active:translate-y-0 active:scale-[0.98] transition-all duration-200 flex items-center justify-center gap-2">
                                         <span>Cek Ketersediaan</span>
-                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+
                                     </button>
+                                    
+                                    <div id="result" class="hidden text-sm p-4 rounded-lg"></div>
+                                    
+                                    <button type="button" id="btnBooking" onclick="submitBooking()"
+                                            class="w-full bg-gray-900 hidden text-white py-4 rounded-xl font-bold text-lg hover:bg-black hover:shadow-lg hover:-translate-y-0.5 transform active:translate-y-0 active:scale-[0.98] transition-all duration-200 gap-2">
+                                        <span>Booking Sekarang</span>
+                                       
+                                    </button>
+
                                 </div>
                             </form>
                         </div>
@@ -157,3 +165,91 @@
         </div>
     </div>
 </x-layouts.app>
+<script>
+    document.addEventListener('DOMContentLoaded',()=>{
+    const form = document.getElementById('checkForm');
+
+    if(form){
+ form.addEventListener('submit',(e)=>{
+        e.preventDefault();
+
+        const product = document.getElementById('product_id');
+        const tanggal_rental = document.getElementById('tanggal_rental');
+        const tanggal_selesai = document.getElementById('tanggal_selesai');
+        const hasil = document.getElementById('result');
+        const buttonCheck = document.getElementById('btnCheck');
+        const buttonBooking = document.getElementById('btnBooking');
+        const originalBtnText = btnCheck.innerHTML;
+        const produkValue = product.value;
+
+        const tanggalMulai = tanggal_rental.value;
+        const tanggalSelesai = tanggal_selesai.value;
+
+        if(!tanggal_selesai || !tanggal_rental){
+            alert('Harap Diisi Semua tanggal ya')
+            return;
+        }
+
+        buttonCheck.disabled = true;
+        buttonCheck.innerHTML = '<svg class="animate-spin h-5 w-5 mr-3 text-white" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Mengecek...';
+        buttonBooking.disabled = true;
+        hasil.disabled = true;
+
+        fetch("{{ route('booking.check') }}",{
+            method:'POST',
+            headers:{
+                "Content-Type": "application/json",
+                "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            },
+            body: JSON.stringify({
+                product_id: produkValue,
+                tanggal_rental: tanggalMulai,
+                tanggal_selesai: tanggalSelesai
+            })
+        })
+        .then(response => response.json())
+        .then(data=>{
+            buttonCheck.disabled = false;
+            buttonCheck.innerHTML = originalBtnText;
+
+            hasil.classList.remove('hidden');
+
+            if(data.available){
+                hasil.className = "rounded-xl p-4 text-sm bg-green-50 text-green-800 border border-green-200 flex items-center gap-2";
+                hasil.innerHTML = `
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                    <div>
+                        <strong>Unit Tersedia!</strong><br>
+                        Masih ada ${data.sisa_kamera} unit di tanggal tersebut.
+                    </div>
+                `;
+                buttonCheck.classList.add('hidden')
+                buttonBooking.classList.remove('hidden')
+            }else{
+                hasil.className = "rounded-xl p-4 text-sm bg-red-50 text-red-800 border border-red-200 flex items-center gap-2";
+                hasil.innerHTML = `
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    <div>
+                        <strong>Yah, Stok Habis!</strong><br>
+                        Semua unit sedang disewa pada tanggal tersebut. Coba geser tanggal?
+                    </div>
+                `;
+                buttonBooking.classList.add('hidden');
+            }
+        })
+        .catch(error=>{
+            console.error('Error:', error);
+            btnCheck.disabled = false;
+            btnCheck.innerHTML = originalBtnText;
+            alert("Terjadi kesalahan sistem atau tanggal tidak valid.");
+        })
+    });
+
+    }else{
+        console.log('form dengan id berikut tidak ada');
+    } 
+    const submitBooking = ()=>{
+        alert("Melanjutkan ke proses pembayaran...");
+    }
+    })
+</script>
