@@ -4,6 +4,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RentalController;
+use App\Models\Rental;
 use Illuminate\Container\Attributes\Auth;
 use Illuminate\Support\Facades\Route;
 use Symfony\Component\HttpFoundation\Session\Session;
@@ -20,10 +21,13 @@ Route::post('/booking/check', [ProductController::class, 'checkAvailability'])
     ->name('booking.check');
 
 Route::middleware('auth')->group(function () {
+    Route::get('/history',[RentalController::class,'index'])->name('history');
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    Route::post('/booking',[RentalController::class,'success'])->name('booking.success');
+    Route::get('/booking/success/{kode}',[RentalController::class,'success'])->name('booking.success');
+    Route::post('/booking/store',[RentalController::class,'store'])->name('booking.store');
+    Route::get('/booking/create',[RentalController::class,'create'])->name('booking.create');
 });
 
 require __DIR__.'/auth.php';

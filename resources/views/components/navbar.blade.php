@@ -11,11 +11,11 @@
         <nav aria-label="Global" class="hidden md:block">
           <ul class="flex items-center gap-8 text-sm">
             <li>
-              <a class="text-black transition hover:text-gray-600 font-inter    " href="#home"> Home </a>
+              <a class="text-black transition hover:text-gray-600 font-inter    " href="{{ route('landing') }}#home"> Home </a>
             </li>
 
             <li>
-              <a class="text-black transition hover:text-gray-600 font-inter    " href="#about"> About </a>
+              <a class="text-black transition hover:text-gray-600 font-inter    " href="{{ route('landing') }}#about"> About </a>
             </li>
 
             <li>
@@ -23,12 +23,58 @@
             </li>
 
             <li>
-              <a class="text-black transition hover:text-gray-600 font-inter    " href="#contact"> Kontak </a>
+              <a class="text-black transition hover:text-gray-600 font-inter    " href="{{ route('landing') }}#contact"> Kontak </a>
             </li>
 
-            <li>
-              <a class="text-black transition hover:text-gray-600 font-inter    " href="{{ route('register') }}"> Register </a>
-            </li>
+           <li>
+          @guest
+              <a class="text-black transition hover:text-gray-600 font-inter" href="{{ route('register') }}">
+                  Register
+              </a>
+          @endguest
+
+      @auth
+         <div x-data="{open:false}" class="relative">
+           <button 
+        @click="open = !open"
+        class="flex items-center gap-2 font-semibold hover:text-gray-600">
+
+        <span>
+            {{ auth()->user()->name }}
+        </span>
+
+        <svg class="w-4 h-4 transition-transform duration-200"
+             :class="open ? 'rotate-180' : ''"
+             fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+        </svg>
+    </button>
+          <div x-show="open"
+          @click.outside ="open = false"
+        x-transition:enter="transition ease-out duration-300"
+        x-transition:enter-start="opacity-0 scale-90"
+        x-transition:enter-end="opacity-100 scale-100"
+        x-transition:leave="transition ease-in duration-300"
+        x-transition:leave-start="opacity-100 scale-100"
+        x-transition:leave-end="opacity-0 scale-90"
+        class="absolute right-0 mt-2 w-48 bg-white border border-gray-200 shadow-md rounded-lg p-3"
+        >
+          <a href="" class="block w-full px-4 py-2 text-sm hover:text-gray-600 text-left">Riwayat Sewa</a>
+          <div class="border-t border-x-gray-600"></div>
+          <form action="{{ route('logout') }}" method="POST">
+            @csrf
+          <button type="submit" class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:text-red-700">
+                         Logout
+                    </button>
+          </form>
+          
+          </div>
+         </div>
+      @endauth
+
+
+      </li>
+
           </ul>
         </nav>
 

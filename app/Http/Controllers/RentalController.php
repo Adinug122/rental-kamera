@@ -9,23 +9,55 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+use Random\CryptoSafeEngine;
 
 class RentalController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function success()
-    {
-        return view('components.success');
+
+
+    public function index(){
+
+    $history = Rental::where('user_id',Auth::user()->id)
+                ->with('item.product')
+                ->latest()
+                ->paginate(10);
+
+    return view('history',compact('history'));
+
     }
 
+   public function success($kode) // Tangkap kodenya (String)
+    {
+      
+        $rental = Rental::where('kode_booking', $kode)
+                    ->with('item.product') 
+                    ->firstOrFail();
+
+        return view('components.success', compact('rental'));
+    }
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(Request $request)
     {
-        return view('booking');
+        $productId = $request->query('product_id');
+        $tanggal_rental = $request->query('start_date');
+        $tanggal_selesai = $request->query('end_date');
+      if (!$productId || !$tanggal_rental || !$tanggal_selesai) {
+        return redirect()->back()->with('error', 'Data booking tidak lengkap.');
+    }
+        
+        $product = Product::findOrFail($productId);
+
+        $start = Carbon::parse($tanggal_rental);
+        $end = Carbon::parse($tanggal_selesai);
+        $days = $start->diffInDays($end);
+        if ($days == 0) $days = 1;
+
+        return view('booking', compact('product', 'tanggal_rental', 'tanggal_selesai', 'days'));
     }
 
     /**
@@ -40,7 +72,8 @@ class RentalController extends Controller
         'tanggal_rental' => 'required|date',
         'product_id' => 'required',
         'tanggal_selesai' => 'required|date|after:tanggal_rental',
-        'qty' => 'required|integer|min:1'
+        'qty' => 'required|integer|min:1',
+        'bukti_pembayaran' => 'required|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
 
@@ -48,7 +81,19 @@ class RentalController extends Controller
             ->diffInDays($request->tanggal_selesai);
             $product = Product::findOrFail($request->product_id);
         $harga = $product->harga;
+        if($product->discount && $product->discount > 0){
+         $persen = min($product->discount, 100); 
+        $potongan = $harga * ($persen / 100);
+        $harga = $harga - $potongan;
+
+        }
+      
         $total = $harga * $days * $request->qty;
+
+        $buktiPath = null;
+        if($request->hasFile('bukti_pembayaran')){
+        $buktiPath = $request->file('bukti_pembayaran')->store('payments','public');
+        }
 
         $rental = Rental::create([
              'user_id' => $user->id,
@@ -56,7 +101,8 @@ class RentalController extends Controller
         'tanggal_rental' => $request->tanggal_rental,
         'tanggal_selesai' => $request->tanggal_selesai,
         'total_harga' => $total,
-        'status_sewa' => 'pending'
+        'status_sewa' => 'pending',
+        'bukti_pembayaran' => $buktiPath,
         ]);
 
         RentalItem::create([
