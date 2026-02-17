@@ -18,16 +18,29 @@ class RentalController extends Controller
      */
 
 
-    public function index(){
+    public function index(Request $request){
 
-    $history = Rental::where('user_id',Auth::user()->id)
-                ->with('item.product')
-                ->latest()
-                ->paginate(10);
+
+
+    $query = Rental::where('user_id',Auth::user()->id)
+                ->with(['item.product']);
+          
+    $query->when($request->search,function($q) use ($request){
+        return $q->where(function($subQuery) use ($request){
+           $subQuery->where('kode_booking', 'LIKE', '%' . $request->search . '%')
+           ->orWhereHas('item.product',function($productQuery) use ($request){
+            $productQuery->where('nama_produk','LIKE','%'. $request->search . '%');
+           });
+        });
+    });
+    
+
+    $history = $query->latest()->paginate(10)->withQueryString();
 
     return view('history',compact('history'));
-
     }
+
+
 
    public function success($kode) // Tangkap kodenya (String)
     {
@@ -67,6 +80,7 @@ class RentalController extends Controller
     {
         $user = Auth::user();
 
+         
         $request->validate([
         'user_id' => 'required',
         'tanggal_rental' => 'required|date',
@@ -74,6 +88,7 @@ class RentalController extends Controller
         'tanggal_selesai' => 'required|date|after:tanggal_rental',
         'qty' => 'required|integer|min:1',
         'bukti_pembayaran' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+        'jaminan' => 'required|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
 
@@ -95,6 +110,11 @@ class RentalController extends Controller
         $buktiPath = $request->file('bukti_pembayaran')->store('payments','public');
         }
 
+        $jaminan = null;
+        if($request->hasFile('jaminan')){
+            $jaminan = $request->file('jaminan')->store('jaminan','public');
+        }
+
         $rental = Rental::create([
              'user_id' => $user->id,
         'kode_booking' => 'BK-' . strtoupper(Str::random(6)),
@@ -102,6 +122,7 @@ class RentalController extends Controller
         'tanggal_selesai' => $request->tanggal_selesai,
         'total_harga' => $total,
         'status_sewa' => 'pending',
+        'jaminan' => $jaminan,
         'bukti_pembayaran' => $buktiPath,
         ]);
 

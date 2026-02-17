@@ -43,6 +43,13 @@ class ProductForm
                     ->required()
                     ->numeric()
                     ->default(1),
+                TextInput::make('biaya_denda_harian')
+                ->label('Biaya Denda per Hari')
+                ->numeric()
+                ->prefix('Rp')
+                ->placeholder('50000')
+                ->required(),
+                
                 Toggle::make('is_new')
                     ->required(),
                 Toggle::make('is_sale')

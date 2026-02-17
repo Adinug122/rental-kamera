@@ -71,6 +71,15 @@
     </div>
 </div>
 
+<div>
+     <label class="block text-xs font-bold uppercase text-gray-500 mb-2">Upload Bukti jaminan</label>
+     <input type="file" name="jaminan" required accept="image/*"
+        class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-gray-900 file:text-white hover:file:bg-black cursor-pointer border border-gray-200 rounded-xl">
+        <p class="text-[10px] text-gray-400 mt-1">*Format: JPG, PNG. Maks 2MB.</p>
+@error('jaminan')
+    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+@enderror
+</div>
                         <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
                             <h2 class="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
                                 <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>

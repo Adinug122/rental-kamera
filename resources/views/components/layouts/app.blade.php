@@ -19,6 +19,11 @@
   <style>
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        [x-cloak] { display:none !important; }
+        body{
+             overflow-y:scroll  
+        }
+       
     </style>
 
 </head>
@@ -28,6 +33,7 @@
             <main class="flex-1 flex flex-col overflow-hidden ">
                 {{ $slot }}
             </main>
+            @include('components.footer')
             </div>
         </div>
         

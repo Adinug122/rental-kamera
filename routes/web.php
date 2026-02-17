@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ChatController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
@@ -14,12 +15,12 @@ Route::post('/contact',[HomeController::class,'store'])->name('contact.store');
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
-
+Route::post('ai/chat',[ChatController::class,'askAi'])->name('askAi');
 Route::get('/produk/{product}', [ProductController::class, 'show'])
     ->name('produk.show');
 Route::post('/booking/check', [ProductController::class, 'checkAvailability'])
     ->name('booking.check');
-
+Route::get('/produk',[HomeController::class,'produk'])->name('produk');
 Route::middleware('auth')->group(function () {
     Route::get('/history',[RentalController::class,'index'])->name('history');
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

@@ -13,7 +13,9 @@ use Filament\Resources\Resource;
 use Filament\Forms\Form; 
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use pxlrbt\FilamentExcel\Actions\ExportAction;
 
 class RentalResource extends Resource
 {
@@ -32,6 +34,7 @@ class RentalResource extends Resource
     public static function table(Table $table): Table
     {
         return RentalsTable::configure($table);
+        
     }
 
     public static function getRelations(): array

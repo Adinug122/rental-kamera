@@ -79,7 +79,7 @@
                
             </div>
             <div class="flex justify-center items-center mt-10">
-            <a href="#" class="bg-black text-white px-12 py-3 rounded-lg  transition-colors tracking-widest text-sm font-bold group relative">
+            <a href="{{ route('produk') }}" class="bg-black text-white px-12 py-3 rounded-lg  transition-colors tracking-widest text-sm font-bold group relative">
                 <div class="scale-x-0 absolute inset-0 w-full h-full bg-gray-800 transform rounded-lg origin-left transition-transform duration-300 ease-out group-hover:scale-x-100"></div>
                <span class="relative z-10 transition-colors duration-300">
                  CLICK MORE

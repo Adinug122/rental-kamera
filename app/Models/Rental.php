@@ -14,12 +14,16 @@ class Rental extends Model
         'status_sewa',
         'total_harga',
         'bukti_pembayaran',
-    ];
+        'jaminan',
+        'biaya_denda_per_hari',
+        'denda',
+        ];
 
     public function item(){
         return $this->hasMany(RentalItem::class);
     }
 
+    
 
     public function user(){
         return $this->belongsTo(User::class);

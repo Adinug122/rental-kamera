@@ -11,8 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('products', function (Blueprint $table) {
-        $table->json('benefits')->nullable()->after('harga');
+        Schema::table('rentals', function (Blueprint $table) {
+            $table->decimal('denda',12,2)->default(0);
+            $table->decimal('biaya_denda_per_hari',12,2)->default(20000);
         });
     }
 
@@ -21,8 +22,9 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('products', function (Blueprint $table) {
-            $table->dropColumn('benefits');
+        Schema::table('rentals', function (Blueprint $table) {
+            $table->dropColumn('denda');
+            $table->dropColumn('biaya_denda_per_hari');
         });
     }
 };

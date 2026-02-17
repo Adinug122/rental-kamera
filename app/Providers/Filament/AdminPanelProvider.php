@@ -2,6 +2,8 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Widgets\OmzetChart;
+use App\Filament\Widgets\RentalStats;
 use App\Http\Responses\LogoutResponse;
 use Filament\Http\Responses\Auth\Contracts\LogoutResponse as LogoutResponseContract;
 use Filament\Http\Middleware\Authenticate;
@@ -52,11 +54,11 @@ class AdminPanelProvider extends PanelProvider
             ->pages([
                 Dashboard::class,
             ])
-            ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->widgets([
-                AccountWidget::class,
-                FilamentInfoWidget::class,
-            ])
+                RentalStats::class,
+                OmzetChart::class,
+                ])
+        
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,

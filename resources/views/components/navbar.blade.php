@@ -19,7 +19,7 @@
             </li>
 
             <li>
-              <a class="text-black transition hover:text-gray-600 font-inter    " href="#produk"> Produk </a>
+              <a class="text-black transition hover:text-gray-600 font-inter    " href="{{ route('produk') }}"> Produk </a>
             </li>
 
             <li>
@@ -59,7 +59,7 @@
         x-transition:leave-end="opacity-0 scale-90"
         class="absolute right-0 mt-2 w-48 bg-white border border-gray-200 shadow-md rounded-lg p-3"
         >
-          <a href="" class="block w-full px-4 py-2 text-sm hover:text-gray-600 text-left">Riwayat Sewa</a>
+          <a href="{{ route('history') }}" class="block w-full px-4 py-2 text-sm hover:text-gray-600 text-left">Riwayat Sewa</a>
           <div class="border-t border-x-gray-600"></div>
           <form action="{{ route('logout') }}" method="POST">
             @csrf

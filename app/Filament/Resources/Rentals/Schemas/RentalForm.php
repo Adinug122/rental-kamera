@@ -43,21 +43,39 @@ Section::make('Informasi Sewa')->schema([
                     ->required(),
             ])->columns(2),
 
-            // BAGIAN 2: REPEATER BARANG (Wajib ada biar bisa pilih barang)
+          
             Section::make('Barang Sewaan')->schema([
                 Repeater::make('item')
                     ->relationship()
+                    ->live()
+                    ->afterStateUpdated(function($get,$set){
+                        $items = $get('item');
+                        $total = 0;
+                        foreach($items as $item){
+                            $total += (float) ($item['subtotal']?? 0);
+                        }
+                        $set('total_harga',$total);
+                    })
                     ->schema([
                         Select::make('product_id')
                             ->relationship('product', 'nama_produk')
                             ->label('Produk')
-                            ->required()
+                            ->required()        
                             ->searchable()
                             ->preload()
                             ->live()
-                            ->afterStateUpdated(function ($state, $set) {
+                            ->afterStateUpdated(function ($state, $set,$get) {
                                 $product = Product::find($state);
-                                if ($product) $set('subtotal', $product->harga_final ?? 0);
+                                $qty = (float) ($get('qty') ?:1);
+                                $harga = $product ? $product->harga_final : 0;
+                                $subtotal = $harga * $qty;
+                                $set('subtotal',$subtotal);
+                                $items = $get('../../item') ?? [];
+                                $total = 0;
+                                foreach($items as $item){
+                                    $total += (float) ($item['subtotal']?? 0);
+                                }
+                                $set('../../total_harga',$total);
                             }),
 
                         TextInput::make('qty')
@@ -65,14 +83,24 @@ Section::make('Informasi Sewa')->schema([
                             ->default(1)
                             ->reactive()
                             ->afterStateUpdated(function ($state, $set, $get) {
-                                $product = Product::find($get('product_id'));
-                                if ($product) $set('subtotal', ($product->harga_final ?? 0) * $state);
+                             $product = Product::find($state);
+                                $qty = (float) ($get('qty') ?:1);
+                                $harga = $product ? $product->harga_final : 0;
+                                $subtotal = $harga * $qty;
+                                $set('subtotal',$subtotal);
+                                $items = $get('../../item') ?? [];
+                                $total = 0;
+                                foreach($items as $item){
+                                    $total += (float) ($item['subtotal']?? 0);
+                                }
+                                $set('../../total_harga',$total);
                             }),
 
                         TextInput::make('subtotal')
                             ->numeric()
                             ->readOnly()
-                            ->prefix('Rp'),
+                            ->prefix('Rp')
+                            ->live(),
                     ])->columns(3)
             ]),
 
@@ -82,6 +110,7 @@ Section::make('Informasi Sewa')->schema([
                 
                 TextInput::make('total_harga')
                     ->numeric()
+                    ->readOnly()
                     ->prefix('Rp')
                     ->default(0)
                     ->required(),
@@ -89,6 +118,12 @@ Section::make('Informasi Sewa')->schema([
                 FileUpload::make('bukti_pembayaran')
                     ->disk('public')
                     ->directory('payments')
+                    ->image()
+                    ->visibility('public'),
+
+                FileUpload::make('jaminan')
+                    ->disk('public')
+                    ->directory('jaminan')
                     ->image()
                     ->visibility('public'),
             ])->columns(2),
